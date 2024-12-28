@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
     await newTask.save();//enregistrer une nouveele tache dans mongodb
     res.status(201).json(newTask);
   } catch (err) {
-    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    res.status(500).json({ message: 'Erreur', error: err.message });
   }
 });
 
@@ -24,9 +24,25 @@ router.get('/', async (req, res) => {
       const allTasks = await Task.find();
       res.status(200).json(allTasks);
     } catch (err) {
-      res.status(500).json({ message: 'Erreur serveur', error: err.message });
+      res.status(500).json({ message: 'Erreur', error: err.message });
+    }
+  });
+//modifier tache
+router.put('/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { completed } = req.body;
+      const existingTask = await Task.findById(id);
+      if (!existingTask) {
+        return res.status(404).json({ message: 'pas de tache' });
+      }
+      existingTask.completed = completed;
+      await existingTask.save();
+      res.status(200).json(existingTask);
+    } catch (err) {
+      res.status(500).json({ message: 'Erreur', error: err.message });
     }
   });
   
-
+  
 module.exports = router;
