@@ -44,5 +44,17 @@ router.put('/:id', async (req, res) => {
     }
   });
   
-  
+//supprimer une tache
+router.delete('/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deletedTask = await Task.findByIdAndDelete(id);
+      if (!deletedTask) {
+        return res.status(404).json({ message: 'Tâche non trouvée' });
+      }
+      res.status(200).json({ message: 'Tâche supprimée avec succès' });
+    } catch (err) {
+      res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    }
+  });
 module.exports = router;
